@@ -12,6 +12,7 @@
 
 
 // Enable display drivers
+#define U8G_SH1106_128x64_I2C
 #define U8G_SSD1306_128x64_I2C
 #define U8G_SSD1306_128x64_SPI
 // untested

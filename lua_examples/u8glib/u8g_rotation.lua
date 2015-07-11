@@ -77,6 +77,6 @@ function rotation_test()
      print("--- Rotation Test done ---")
 end
 
---init_i2c_display()
-init_spi_display()
+init_i2c_display()
+--init_spi_display()
 rotation_test()

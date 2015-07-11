@@ -981,6 +981,51 @@ static int lu8g_close_display( lua_State *L )
 
 
 // device constructors
+uint8_t u8g_dev_sh1106_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg);
+// Lua: object = u8g.sh1106_128x64_i2c( i2c_addr )
+static int lu8g_sh1106_128x64_i2c( lua_State *L )
+{
+    unsigned addr = luaL_checkinteger( L, 1 );
+
+    if (addr == 0)
+        return luaL_error( L, "i2c address required" );
+
+    lu8g_userdata_t *lud = (lu8g_userdata_t *) lua_newuserdata( L, sizeof( lu8g_userdata_t ) );
+
+    lud->u8g.i2c_addr = (uint8_t)addr;
+
+    // Don't use the pre-defined device structure for u8g_dev_ssd1306_128x64_i2c here
+    // Reason: linking the pre-defined structures allocates RAM for the device/comm structure
+    //         *before* the display is constructed (especially the page buffers)
+    //         this consumes heap even when the device is not used at all
+#if 1
+    // build device entry
+    lud->dev = (u8g_dev_t){ u8g_dev_sh1106_128x64_fn, &(lud->pb), U8G_COM_SSD_I2C };
+
+    // populate and allocate page buffer
+    // constants taken from u8g_dev_ssd1306_128x64.c:
+    //                     PAGE_HEIGHT
+    //                      | Height
+    //                      |  |              WIDTH
+    //                      |  |               |
+    lud->pb = (u8g_pb_t){ { 8, 64, 0, 0, 0 }, 128, NULL };
+    //
+    if ((lud->pb.buf = (void *)c_zalloc(lud->pb.width)) == NULL)
+        return luaL_error( L, "out of memory" );
+
+    // and finally init device using specific interface init function
+    u8g_InitI2C( LU8G, &(lud->dev), U8G_I2C_OPT_NONE);
+#else
+    u8g_InitI2C( LU8G, &u8g_dev_sh1106_128x64_i2c, U8G_I2C_OPT_NONE);
+#endif
+
+
+    // set its metatable
+    luaL_getmetatable(L, "u8g.display");
+    lua_setmetatable(L, -2);
+
+    return 1;
+}
 
 uint8_t u8g_dev_ssd1306_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg);
 // Lua: object = u8g.ssd1306_128x64_i2c( i2c_addr )
@@ -1189,6 +1234,9 @@ static const LUA_REG_TYPE lu8g_display_map[] =
 
 const LUA_REG_TYPE lu8g_map[] = 
 {
+#ifdef U8G_SH1106_128x64_I2C
+    { LSTRKEY( "sh1106_128x64_i2c" ), LFUNCVAL ( lu8g_sh1106_128x64_i2c ) },
+#endif
 #ifdef U8G_SSD1306_128x64_I2C
     { LSTRKEY( "ssd1306_128x64_i2c" ), LFUNCVAL ( lu8g_ssd1306_128x64_i2c ) },
 #endif

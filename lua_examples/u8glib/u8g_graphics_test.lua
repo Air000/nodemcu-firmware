@@ -143,6 +143,6 @@ function graphics_test(delay)
      print("--- Graphics Test done ---")
 end
 
---init_i2c_display()
-init_spi_display()
+--init_spi_display()
+init_i2c_display()
 graphics_test(50000)
