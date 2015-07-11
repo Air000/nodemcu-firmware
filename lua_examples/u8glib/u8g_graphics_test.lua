@@ -6,7 +6,7 @@ function init_i2c_display()
      local scl = 6 -- GPIO12
      local sla = 0x3c
      i2c.setup(0, sda, scl, i2c.SLOW)
-     disp = u8g.ssd1306_128x64_i2c(sla)
+     disp = u8g.sh1106_128x64_i2c(sla)
 end
 
 -- setup SPI and connect display
