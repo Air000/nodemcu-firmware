@@ -56,7 +56,7 @@ static void wifi_smart_succeed_cb(void *arg){
     luaL_unref(smart_L, LUA_REGISTRYINDEX, wifi_smart_succeed);
     wifi_smart_succeed = LUA_NOREF;
   }
-  smartconfig_stop();
+  //smartconfig_stop();
 
 #endif // defined( NODE_SMART_OLDSTYLE )
 }

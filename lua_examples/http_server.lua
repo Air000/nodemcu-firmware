@@ -21,11 +21,11 @@
 --
 
 -- Your Wifi connection data
-local SSID = "YOUR WIFI SSID"
-local SSID_PASSWORD = "YOUR SSID PASSPHRASE"
+local SSID = "Terry3G"
+local SSID_PASSWORD = "mcu909394"
 
 -- General setup
-local pinLight = 2 -- this is GPIO4
+local pinLight = 0 -- this is GPIO4
 gpio.mode(pinLight,gpio.OUTPUT)
 gpio.write(pinLight,gpio.HIGH)
 
